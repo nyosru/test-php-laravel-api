@@ -1,0 +1,77 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "OpenApi Documentation",
+        "description": "Документация для микро сервиса",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Основной API"
+        }
+    ],
+    "paths": {
+        "/notes": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "получаем список записей",
+                "responses": {
+                    "200": {
+                        "description": "норм ответ"
+                    },
+                    "401": {
+                        "description": "Ошибочка"
+                    }
+                }
+            }
+        },
+        "/notes/store": {
+            "post": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "создание записки",
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "название",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "описание",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "добавили, окей"
+                    },
+                    "401": {
+                        "description": "Ошибочка"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Notes",
+            "description": "Работа с записками"
+        }
+    ],
+    "security": [
+        []
+    ]
+}
