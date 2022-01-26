@@ -10,7 +10,7 @@ class NotesController extends Controller
 
     /**
       @OA\Get(
-          path="/notes",
+          path="/api/notes",
           summary="получаем список записей", 
           tags={"Notes"},
           @OA\Response(
@@ -36,15 +36,15 @@ class NotesController extends Controller
 
 
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
+    // /**
+    //  * Show the form for creating a new resource.
+    //  *
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function create(Request $request)
+    // {
 
-    }
+    // }
 
 
 
@@ -54,12 +54,12 @@ class NotesController extends Controller
 
     /**
       @OA\Post(
-          path="/notes/store",
+          path="/api/notes",
           summary="создание записки", 
           tags={"Notes"},
         @OA\Parameter(
            name="title",
-           description="название",
+           description="название (латиница, цифры)",
            in="query",
            required=true,
            @OA\Schema(
@@ -103,13 +103,18 @@ class NotesController extends Controller
             //code...
 
             $validated = $request->validate([
-                'title' => 'required|max:255|regex:/^[\w-]*$/',
-                'description' => 'required|regex:/^[\w-]*$/',
+                'title' => 'required|max:255|alpha_dash',
+                'description' => 'required',
             ]);
 
             // $return = [ 'val' => $validated , 'req' => $request->all(), 11 => 22];
 
-            $return['added'] = Notes::insert($validated);
+            // $return['added'] = Notes::insert($validated);
+            $note = new Notes;
+            $note->title = $validated['title'];
+            $note->description = $validated['description'];
+            $return['added'] = $note->save();
+
         } catch (\Throwable $th) {
             $return['validate'] = false;
         }
@@ -117,77 +122,120 @@ class NotesController extends Controller
         return response()->json($return);
     }
 
+    // /**
+    //  * Display the specified resource.
+    //  *
+    //  * @param  \App\Models\Notes  $notes
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function show(Notes $notes)
+    // {
+    //     //
+    // }
 
+
+
+    
     /**
-     * @SWG\Get(
-     *     path="/posts/{post_id}",
-     *     summary="Get blog post by id",
-     *     tags={"Posts"},
-     *     description="Get blog post by id",
-     *     @SWG\Parameter(
-     *         name="post_id",
-     *         in="path",
-     *         description="Post id",
-     *         required=true,
-     *         type="integer",
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="successful operation",
-     *         @SWG\Schema(ref="#/definitions/Post"),
-     *     ),
-     *     @SWG\Response(
-     *         response="401",
-     *         description="Unauthorized user",
-     *     ),
-     *     @SWG\Response(
-     *         response="404",
-     *         description="Post is not found",
-     *     )
-     * )
+      @OA\Get(
+          path="/api/notes/{id}/edit",
+          summary="создание записки", 
+          tags={"Notes"},
+
+        @OA\Parameter(
+           name="id",
+           description="номер записи (id)",
+           in="path",
+           required=true,
+           @OA\Schema( type="number" )
+       ),
+
+        @OA\Parameter(
+           name="title",
+           description="название (латиница, цифры)",
+           in="query",
+           required=true,
+           @OA\Schema( type="string" )
+       ),
+
+        @OA\Parameter(
+           name="description",
+           description="описание",
+           in="query",
+           required=true,
+           @OA\Schema(
+                type="string"
+           )
+       ),
+              @OA\Response(
+                response="200", 
+                description="добавили, окей"
+            ),
+          @OA\Response(
+              response="401",
+              description="Ошибочка",
+          ),
+      )
      */
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Notes  $notes
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Notes $notes)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
+     * редактируем записку, присылаем номер заголовок и описание
      *
      * @param  \App\Models\Notes  $notes
      * @return \Illuminate\Http\Response
      */
-    public function edit(Notes $notes)
+    public function edit(Notes $notes, Request $request)
     {
-        //
+        $return = [
+            'validate' => false,
+            'request' => $request->all()
+        ];
+
+        try {
+
+            // правила валидации
+            $validated = $request->validate([
+                'id' => 'required|numeric',
+                'title' => 'required|max:255|alpha_dash',
+                'description' => 'required',
+            ]);
+            // если сработает строчка значит проверка прошла норм
+            $return['validate'] = true;
+
+            // изменяем строчку
+            $note = Notes::find($validated['id']);
+            $post->title = $validated['title'];
+            $post->description = $validated['description'];
+            $return['edited'] = $note->save();            
+
+        } catch (\Throwable $th) {
+        }
+
+        // возвращаем json
+        return response()->json($return);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Notes  $notes
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Notes $notes)
-    {
-        //
-    }
+    // /**
+    //  * Update the specified resource in storage.
+    //  *
+    //  * @param  \Illuminate\Http\Request  $request
+    //  * @param  \App\Models\Notes  $notes
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function update(Request $request, Notes $notes)
+    // {
+    //     //
+    // }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Notes  $notes
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Notes $notes)
-    {
-        //
-    }
+    // /**
+    //  * Remove the specified resource from storage.
+    //  *
+    //  * @param  \App\Models\Notes  $notes
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function destroy(Notes $notes)
+    // {
+    //     //
+    // }
 }

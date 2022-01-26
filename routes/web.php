@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\NotesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,11 +13,6 @@ use App\Http\Controllers\NotesController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
-// ресурсный контроллер в апи
-Route::resource('notes', NotesController::class);
-
 
 Route::get('/', function () {
     return view('welcome');

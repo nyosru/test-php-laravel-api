@@ -9,10 +9,14 @@
         {
             "url": "http://localhost:8000",
             "description": "Основной API"
+        },
+        {
+            "url": "http://test-api.php-cat.com",
+            "description": "Боевой домен API"
         }
     ],
     "paths": {
-        "/notes": {
+        "/api/notes": {
             "get": {
                 "tags": [
                     "Notes"
@@ -26,9 +30,7 @@
                         "description": "Ошибочка"
                     }
                 }
-            }
-        },
-        "/notes/store": {
+            },
             "post": {
                 "tags": [
                     "Notes"
@@ -38,7 +40,52 @@
                     {
                         "name": "title",
                         "in": "query",
-                        "description": "название",
+                        "description": "название (латиница, цифры)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "описание",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "добавили, окей"
+                    },
+                    "401": {
+                        "description": "Ошибочка"
+                    }
+                }
+            }
+        },
+        "/api/notes/{id}/edit": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "создание записки",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "номер записи (id)",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "название (латиница, цифры)",
                         "required": true,
                         "schema": {
                             "type": "string"

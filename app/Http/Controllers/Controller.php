@@ -19,6 +19,11 @@ use Illuminate\Routing\Controller as BaseController;
  *      description="Основной API"
  * )
  *
+ * @OA\Server(
+ *      url="http://test-api.php-cat.com",
+ *      description="Боевой домен API"
+ * )
+ *
  * @OA\Tag(
  *     name="Notes",
  *     description="Работа с записками"
